@@ -1,2 +1,3 @@
 # IPA_Info
-Dump all IPA info script
+Copy your *.ipa file to "ipa" folder, then double click dump.command in Finder.
+
