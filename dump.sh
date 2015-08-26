@@ -7,24 +7,26 @@ outputCSVName="result.csv"
 
 foreachfile()
 {
-	filename=`basename "$1"`
 	echo 
-	echo "find a file "$filename
-	tempDirName=$filename".dir"
-	tempDirPath="./ipa/$tempDirName"
+	echo "find a file "$1
+
+	tempDirPath="$1".dir
 
 	#unzip ipa to $tempDirPath
-	mkdir $tempDirPath
-	tar -zxf $1 -C $tempDirPath
+	mkdir "$tempDirPath"
 
+	
+	tar -zxf $1 -C "$tempDirPath"
 
-	#read find plist
-	plistPath=`find $tempDirPath/Payload/ -depth 2 -iname Info.plist`
+ 	
+	# #read find plist
+	plistPath=`find "$tempDirPath/Payload/" -depth 2 -iname Info.plist`
 
-	echo "get a plist "$plistPath
-	schemeList=`python readPlist.py $plistPath`
+	# echo "get a plist "$plistPath
+	schemeList=`python readPlist.py "$plistPath"`
 
 	echo "read scheme "$schemeList
+	tempDirName=${tempDirPath:6}
 
 	echo "$tempDirName"",""$schemeList" >> $outputCSVName
 }
@@ -32,12 +34,15 @@ foreachfile()
 
 #remove old file
 find . -name *.dir -exec rm -rf {} \;
+echo -e "\xEF\xBB\xBF" > $outputCSVName
+echo "file,scheme" >> $outputCSVName
 
-echo "file,scheme" > $outputCSVName
+ipaList=$(find ./ipa -name *.ipa)
 
-for j in `find ./ipa -name *.ipa`
+IFS=$'\n'
+
+for j in $ipaList
 do
-echo $j
 foreachfile $j
 done
 
