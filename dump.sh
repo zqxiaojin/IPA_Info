@@ -15,10 +15,8 @@ foreachfile()
 	#unzip ipa to $tempDirPath
 	mkdir "$tempDirPath"
 
-	
-	tar -zxf $1 -C "$tempDirPath"
+	tar -zxvf $1 -C "$tempDirPath" ./Payload/*.app/Info.plist 
 
- 	
 	# #read find plist
 	plistPath=`find "$tempDirPath/Payload/" -depth 2 -iname Info.plist`
 
@@ -28,7 +26,11 @@ foreachfile()
 	echo "read scheme "$schemeList
 	tempDirName=${tempDirPath:6}
 
+	#push info to cvs file
 	echo "$tempDirName"",""$schemeList" >> $outputCSVName
+
+	#remove temp file
+	rm -rf "$tempDirPath"
 }
 
 
